@@ -16,7 +16,7 @@ app.get("/", async (req, res) => {
 
     const r = await fetch("https://api.remove.bg/v1.0/removebg", {
       method: "POST",
-      headers: { "X-Api-Key": "jE9La5zkmFsN4AR55xzqpxP1" },
+      headers: { "X-Api-Key": process.env.REMOVEBG_KEY },
       body: form
     });
 
@@ -26,7 +26,9 @@ app.get("/", async (req, res) => {
       res.setHeader("Content-Disposition", "attachment; filename=removed-bg.png");
       return res.send(buf);
     }
-  } catch {}
+  } catch (e) {
+    console.log("remove.bg failed, falling back to local AI");
+  }
 
   // Fallback to local AI (works for everything)
   const r2 = await fetch("http://127.0.0.1:5000/?u=" + encodeURIComponent(imageUrl));
